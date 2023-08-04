@@ -1,0 +1,87 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+train_dataset = pd.read_csv('train.csv')
+test_dataset = pd.read_csv('test.csv')
+gender_submission = pd.read_csv('gender_submission.csv')
+
+# Combine train and test datasets
+combined_dataset = pd.concat([train_dataset, test_dataset])
+
+mean_combined = combined_dataset.mean()
+print(mean_combined)
+
+mode_combined = combined_dataset.mode().iloc[0]
+print(mode_combined)
+
+median_combined = combined_dataset.median()
+print(median_combined)
+
+std_dev_combined = combined_dataset.std()
+print(std_dev_combined)
+
+# Visualize the results
+plt.figure(figsize=(10, 6))
+mean_combined.plot(kind='bar', color='blue')
+plt.title('Mean of Combined Dataset')
+plt.xlabel('Columns')
+plt.ylabel('Mean')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(10, 6))
+sns.countplot(data=combined_dataset, x='Sex')
+plt.title('Mode of Combined Dataset')
+plt.xlabel('Columns')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(10, 6))
+median_combined.plot(kind='bar', color='orange')
+plt.title('Median of Combined Dataset')
+plt.xlabel('Columns')
+plt.ylabel('Median')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(10, 6))
+std_dev_combined.plot(kind='bar', color='red')
+plt.title('Standard Deviation of Combined Dataset')
+plt.xlabel('Columns')
+plt.ylabel('Standard Deviation')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Select numeric columns for heatmap
+numeric_columns = combined_dataset.select_dtypes(include='number')
+
+# Calculate the correlation matrix
+correlation_matrix = numeric_columns.corr()
+
+# Create a heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix of Combined Dataset')
+plt.show()
+
+
+numeric_columns = combined_dataset.select_dtypes(include=['int64', 'float64'])
+
+# Calculate statistics
+mean_combined = numeric_columns.mean()
+mode_combined = numeric_columns.mode().iloc[0]
+median_combined = numeric_columns.median()
+std_dev_combined = numeric_columns.std()
+
+# Combine the statistics into a single dataframe
+statistics_df = pd.concat([mean_combined, mode_combined, median_combined, std_dev_combined], axis=1)
+statistics_df.columns = ['Mean', 'Mode', 'Median', 'Standard Deviation']
+
+# Create a heatmap of the statistics
+plt.figure(figsize=(10, 8))
+sns.heatmap(statistics_df, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Statistics Heatmap of Combined Dataset')
+plt.show
